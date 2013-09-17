@@ -9,6 +9,13 @@
 
 class WebsiteController extends BaseController
 {
+    private $websiteService;
+
+    public function __construct()
+    {
+        $this->beforeFilter("auth");
+        $this->websiteService = new WebsiteService();
+    }
 
     public function getAdd()
     {
@@ -19,13 +26,13 @@ class WebsiteController extends BaseController
     {
         $data = Input::all();
         $rules = array(
-            'domainName' => 'Required'
+            'domain' => 'Required'
         );
 
         $v = Validator::make($data, $rules);
         if ($v->passes()) {
             try {
-
+                $website = $this->websiteService->addWebsite($data['domain'], \Auth::user()->id);
                 return Redirect::to('website/list')->with('status', true)->with('message', 'Website added successfully');
             } catch (Exception $e) {
                 return Redirect::to("website/add")->with('status', false)->with("message", "Internal Server Error");
@@ -37,7 +44,12 @@ class WebsiteController extends BaseController
 
     public function getList()
     {
-
+        try {
+            $websites = $this->websiteService->getWebsites(Auth::user()->id);
+            return View::make('website.list')->with('websites', $websites);
+        } catch (Exception $e) {
+            echo "error";
+        }
     }
 
 }

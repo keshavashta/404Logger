@@ -19,4 +19,12 @@ class AppHtmlHelper
 
     }
 
+    public static function get404Code($code)
+    {
+        $source = URL::to('log') . '?code=' . $code;
+
+
+        return htmlentities(" <script type='text/javascript' src='".$source."'></script>");
+    }
+
 }

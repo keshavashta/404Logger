@@ -9,15 +9,35 @@
 
 class LogController extends BaseController
 {
+    private $logService;
 
-    public function getAddLog()
+    public function __construct()
     {
-        var_dump(Input::all());
+        $this->logService = new LogService();
     }
 
-    public function getLogs()
+    public function getIndex()
     {
-        echo "Logs";
+        $code = Input::get('code', null);
+        if (!empty($code)) {
+            var_dump(Input::all());
+            $ip = Request::getClientIp();
+            $httpReferrer = $_SERVER['HTTP_REFERER'];
+            $url = "";
+            $this->logService->addLog($url, $httpReferrer, $ip, $code);
+        }
+        echo "";
+
+    }
+
+    public function getList()
+    {
+        try {
+            $websites = $this->logService->getLogs(Auth::user()->id);
+            return View::make('logs.list')->with('logs', $websites);
+        } catch (Exception $e) {
+            echo "error";
+        }
     }
 
 }

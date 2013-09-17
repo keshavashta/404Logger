@@ -23,7 +23,7 @@ class Init extends Migration
         Schema::create('websites', function ($table) {
             $table->increments('id')->index()->unsigned();
             $table->string('name', 1000);
-            $table->string('code', 20);
+            $table->string('code', 64);
             $table->integer('userId')->index()->unsigned();
             $table->foreign('userId')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->timestamps();
